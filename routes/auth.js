@@ -8,12 +8,12 @@ const router = express.Router();
 
 // Registrar usuário
 router.post('/register', async (req, res) => {
-  const { nome, email, senha, tipo } = req.body;
+  const { nome, usuario, senha, tipo } = req.body;
   const hashedPassword = await bcrypt.hash(senha, 10);
   try {
     const result = await pool.query(
-      'INSERT INTO usuarios (nome, email, senha_hash, tipo) VALUES ($1, $2, $3, $4) RETURNING id_usuario',
-      [nome, email, hashedPassword, tipo || 'comum']
+      'INSERT INTO usuarios (nome, usuario, senha_hash, tipo) VALUES ($1, $2, $3, $4) RETURNING id_usuario',
+      [nome, usuario, hashedPassword, tipo || 'comum']
     );
     res.json({ id: result.rows[0].id_usuario });
   } catch (err) {
@@ -23,11 +23,11 @@ router.post('/register', async (req, res) => {
 
 // Login
 router.post('/login', async (req, res) => {
-  const { email, senha } = req.body;
+  const { usuario, senha } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM usuarios WHERE usuario = $1', [usuario]);
     if (result.rows.length === 0) return res.status(400).json({ message: "Usuário não encontrado" });
-
+    
     const user = result.rows[0];
     const valid = await bcrypt.compare(senha, user.senha_hash);
     if (!valid) return res.status(401).json({ message: "Senha inválida" });

@@ -2,11 +2,11 @@ const loginBtn = document.getElementById('loginBtn');
 const errorDiv = document.getElementById('error');
 
 loginBtn.addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const usuario = document.getElementById('usuario').value;
+    const senha = document.getElementById('senha').value;
 
-    if (!email || !password) {
-        errorDiv.textContent = "Preencha email e senha.";
+    if (!usuario || !senha) {
+        errorDiv.textContent = "Preencha usuario e senha.";
         return;
     }
 
@@ -14,7 +14,7 @@ loginBtn.addEventListener('click', async () => {
         const response = await fetch('http://localhost:3000/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ usuario, senha })
         });
 
         const data = await response.json();
